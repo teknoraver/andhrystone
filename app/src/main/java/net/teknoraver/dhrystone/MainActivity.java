@@ -33,16 +33,18 @@ public class MainActivity extends Activity {
 		private String arch = detectCpu();
 
 		private String detectCpu() {
+			if(Build.CPU_ABI.startsWith("arm64"))
+				return "arm64";
 			if(Build.CPU_ABI.startsWith("arm"))
 				return "arm";
+			if(Build.CPU_ABI.startsWith("x86_64"))
+				return "x86_64";
 			if(Build.CPU_ABI.startsWith("x86"))
 				return "x86";
-			if(Build.CPU_ABI.startsWith("mips"))
-				return "mips";
 			if(Build.CPU_ABI.startsWith("mips64"))
 				return "mips64";
-			if(Build.CPU_ABI.startsWith("aarch64"))
-				return "aarch64";
+			if(Build.CPU_ABI.startsWith("mips"))
+				return "mips";
 
 			return null;
 		}
@@ -63,7 +65,7 @@ public class MainActivity extends Activity {
 				out.close();
 				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()});
 				len = Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream().read(buf);
-				StringBuffer dotted = new StringBuffer();
+				StringBuilder dotted = new StringBuilder(20);
 				for(int i = 0; i < len; i++){
 					if(i != 0 && i % 3 == 0)
 						dotted.insert(0, '.');
@@ -82,9 +84,10 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(Object o) {
 			findViewById(R.id.progress).setVisibility(View.GONE);
 			TextView r = (TextView) findViewById(R.id.result);
-			String txt = "ABI: " + Build.CPU_ABI + "\n";
-			txt += "ABI2: " + Build.CPU_ABI2 + "\n";
-			txt += "arch:\t" + arch + "\nresult:\t" + result;
+			StringBuilder txt = new StringBuilder();
+			txt.append("ABI:\t").append(Build.CPU_ABI).append("\n")
+				.append("ABI2:\t").append(Build.CPU_ABI2).append("\n")
+				.append("arch:\t").append(arch).append("\nresult:\t").append(result);
 			r.setText(txt);
 			r.setVisibility(View.VISIBLE);
 		}
