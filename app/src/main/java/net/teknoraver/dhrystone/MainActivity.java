@@ -84,8 +84,8 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(Object o) {
 			findViewById(R.id.progress).setVisibility(View.GONE);
 			TextView r = (TextView) findViewById(R.id.result);
-			StringBuilder txt = new StringBuilder();
-			txt.append("ABI:\t").append(Build.CPU_ABI).append("\n")
+			StringBuilder txt = new StringBuilder()
+				.append("ABI:\t").append(Build.CPU_ABI).append("\n")
 				.append("ABI2:\t").append(Build.CPU_ABI2).append("\n")
 				.append("arch:\t").append(arch).append("\nresult:\t").append(result);
 			r.setText(txt);
