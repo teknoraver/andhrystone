@@ -1,4 +1,4 @@
-package net.teknoraver.dhrystone;
+package net.teknoraver.andhrystone;
 
 import android.app.Activity;
 import android.os.AsyncTask;

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Dhrystone.iml" filepath="$PROJECT_DIR$/Dhrystone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/andhrystone.iml" filepath="$PROJECT_DIR$/andhrystone.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
