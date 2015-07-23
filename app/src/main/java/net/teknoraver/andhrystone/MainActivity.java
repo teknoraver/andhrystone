@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 					out.write(buf, 0, len);
 				in.close();
 				out.close();
-				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()});
+				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
 				len = Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream().read(buf);
 				StringBuilder dotted = new StringBuilder(20);
 				for(int i = 0; i < len; i++){
@@ -76,6 +76,8 @@ public class MainActivity extends Activity {
 				ex.printStackTrace();
 				Toast.makeText(MainActivity.this, "error:" + ex, Toast.LENGTH_LONG);
 				finish();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
