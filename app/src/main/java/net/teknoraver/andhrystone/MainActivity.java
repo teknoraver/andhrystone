@@ -8,46 +8,74 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.StringTokenizer;
 
 public class MainActivity extends Activity {
+	private String arch = detectCpu();
+
+	private String detectX86() {
+		try {
+			BufferedReader in = new BufferedReader(new FileReader("/proc/cpuinfo"));
+			String line;
+			while((line = in.readLine()) != null) {
+				if(line.startsWith("flags	")) {
+					StringTokenizer flags = new StringTokenizer(line, " ");
+					while(flags.hasMoreTokens())
+						if(flags.nextToken().equals("lm"))
+							return "x86_64";
+					break;
+				}
+			}
+		} catch (IOException e) { }
+		return "x86";
+	}
+
+	private String detectCpu() {
+		if(Build.CPU_ABI.startsWith("arm64"))
+			return "arm64";
+		if(Build.CPU_ABI.startsWith("arm"))
+			return "arm";
+		if(Build.CPU_ABI.startsWith("x86"))
+			return detectX86();
+		if(Build.CPU_ABI.startsWith("mips64"))
+			return "mips64";
+		if(Build.CPU_ABI.startsWith("mips"))
+			return "mips";
+
+		return null;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		((TextView)findViewById(R.id.manufacturer)).setText(Build.MANUFACTURER);
+		((TextView)findViewById(R.id.brand)).setText(Build.BRAND);
+		((TextView)findViewById(R.id.model)).setText(Build.MODEL);
+		((TextView)findViewById(R.id.abi)).setText(Build.CPU_ABI);
+		if(arch != null)
+			((TextView)findViewById(R.id.arch)).setText(arch);
+		else
+			((TextView)findViewById(R.id.dhrystones)).setText(R.string.unknown);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		new Dhrystone().execute();
+		if(arch != null)
+			new Dhrystone().execute();
 	}
 
 	private class Dhrystone extends AsyncTask
 	{
 		private String result;
-		private String arch = detectCpu();
-
-		private String detectCpu() {
-			if(Build.CPU_ABI.startsWith("arm64"))
-				return "arm64";
-			if(Build.CPU_ABI.startsWith("arm"))
-				return "arm";
-			if(Build.CPU_ABI.startsWith("x86_64"))
-				return "x86_64";
-			if(Build.CPU_ABI.startsWith("x86"))
-				return "x86";
-			if(Build.CPU_ABI.startsWith("mips64"))
-				return "mips64";
-			if(Build.CPU_ABI.startsWith("mips"))
-				return "mips";
-
-			return null;
-		}
 
 		@Override
 		protected Object doInBackground(Object[] params) {
@@ -57,7 +85,7 @@ public class MainActivity extends Activity {
 				getFilesDir().mkdirs();
 				final InputStream in = getAssets().open(binary);
 				final FileOutputStream out = new FileOutputStream(file);
-				final byte[] buf = new byte[65536];
+				final byte buf[] = new byte[65536];
 				int len;
 				while ((len = in.read(buf)) > 0)
 					out.write(buf, 0, len);
@@ -84,14 +112,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(Object o) {
-			findViewById(R.id.progress).setVisibility(View.GONE);
-			TextView r = (TextView) findViewById(R.id.result);
-			StringBuilder txt = new StringBuilder()
-				.append("ABI:\t").append(Build.CPU_ABI).append("\n")
-				.append("ABI2:\t").append(Build.CPU_ABI2).append("\n")
-				.append("arch:\t").append(arch).append("\nresult:\t").append(result);
-			r.setText(txt);
-			r.setVisibility(View.VISIBLE);
+			((TextView)findViewById(R.id.dhrystones)).setText(result);
 		}
 	}
 }

@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Andhrystone</string>
+	<string name="app_name">Andhrystone</string>
+	<string name="brand">Brand</string>
+	<string name="manufacturer">Manufacturer</string>
+	<string name="model">Model</string>
+	<string name="abi">ABI</string>
+	<string name="arch">Architecture</string>
+	<string name="dhry">Dhrystones</string>
+	<string name="running">Running…</string>
+	<string name="unknown">Unknown</string>
 </resources>
