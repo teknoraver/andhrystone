@@ -85,18 +85,17 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		if(arch != null)
-			new Dhrystone().execute();
+			new Dhrystone().execute(5);
 	}
 
-	private class Dhrystone extends AsyncTask
+	private class Dhrystone extends AsyncTask<Integer, Integer, Void>
 	{
-		private static final int TRIES = 5;
-		private int iter;
-		private String result;
+		private int tries;
 		private int max = 0;
 
 		@Override
-		protected Object doInBackground(Object[] params) {
+		protected Void doInBackground(Integer... params) {
+			tries = params[0];
 			String binary = "dry-" + arch;
 			final File file = new File(getFilesDir(), binary);
 			try {
@@ -110,10 +109,10 @@ public class MainActivity extends Activity {
 				in.close();
 				out.close();
 				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
-				for(iter = 1; iter <= TRIES; iter++) {
+				for(int i = 1; i <= tries; i++) {
+					publishProgress(i);
 					len = Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream().read(buf);
 					max = Math.max(Integer.valueOf(new String(buf, 0, len)), max);
-					publishProgress(null);
 				}
 			} catch (final IOException ex) {
 				ex.printStackTrace();
@@ -126,12 +125,12 @@ public class MainActivity extends Activity {
 		}
 
 		@Override
-		protected void onProgressUpdate(Object[] values) {
-			dhrystones.setText(getString(R.string.runningxof, iter, TRIES));
+		protected void onProgressUpdate(Integer... i) {
+			dhrystones.setText(getString(R.string.runningxof, i[0].intValue(), tries));
 		}
 
 		@Override
-		protected void onPostExecute(Object o) {
+		protected void onPostExecute(Void o) {
 			dhrystones.setText(NumberFormat.getIntegerInstance().format(max));
 		}
 	}
