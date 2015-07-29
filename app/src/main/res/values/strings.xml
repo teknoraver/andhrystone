@@ -8,4 +8,5 @@
 	<string name="dhry">Dhrystones</string>
 	<string name="running">Running…</string>
 	<string name="unknown">Unknown</string>
+	<string name="runningxof">Running %1$d/%2$d</string>
 </resources>

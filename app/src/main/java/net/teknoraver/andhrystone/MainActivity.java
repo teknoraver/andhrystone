@@ -14,10 +14,17 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.NumberFormat;
 import java.util.StringTokenizer;
 
 public class MainActivity extends Activity {
 	private String arch = detectCpu();
+	private TextView manufacturer;
+	private TextView brand;
+	private TextView model;
+	private TextView abi;
+	private TextView architecture;
+	private TextView dhrystones;
 
 	private String detectX86() {
 		try {
@@ -56,14 +63,22 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		((TextView)findViewById(R.id.manufacturer)).setText(Build.MANUFACTURER);
-		((TextView)findViewById(R.id.brand)).setText(Build.BRAND);
-		((TextView)findViewById(R.id.model)).setText(Build.MODEL);
-		((TextView)findViewById(R.id.abi)).setText(Build.CPU_ABI);
+		manufacturer = (TextView)findViewById(R.id.manufacturer);
+		brand = (TextView)findViewById(R.id.brand);
+		model = (TextView)findViewById(R.id.model);
+		abi = (TextView)findViewById(R.id.abi);
+		architecture = (TextView)findViewById(R.id.arch);
+		dhrystones = (TextView)findViewById(R.id.dhrystones);
+
+		manufacturer.setText(Build.MANUFACTURER);
+		brand.setText(Build.BRAND);
+		model.setText(Build.MODEL);
+		abi.setText(Build.CPU_ABI);
+
 		if(arch != null)
-			((TextView)findViewById(R.id.arch)).setText(arch);
+			architecture.setText(arch);
 		else
-			((TextView)findViewById(R.id.dhrystones)).setText(R.string.unknown);
+			dhrystones.setText(R.string.unknown);
 	}
 
 	@Override
@@ -75,7 +90,10 @@ public class MainActivity extends Activity {
 
 	private class Dhrystone extends AsyncTask
 	{
+		private static final int TRIES = 5;
+		private int iter;
 		private String result;
+		private int max = 0;
 
 		@Override
 		protected Object doInBackground(Object[] params) {
@@ -92,14 +110,11 @@ public class MainActivity extends Activity {
 				in.close();
 				out.close();
 				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
-				len = Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream().read(buf);
-				StringBuilder dotted = new StringBuilder(20);
-				for(int i = 0; i < len; i++){
-					if(i != 0 && i % 3 == 0)
-						dotted.insert(0, '.');
-					dotted.insert(0, (char)buf[len - i - 1]);
+				for(iter = 1; iter <= TRIES; iter++) {
+					len = Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream().read(buf);
+					max = Math.max(Integer.valueOf(new String(buf, 0, len)), max);
+					publishProgress(null);
 				}
-				result = dotted.toString();
 			} catch (final IOException ex) {
 				ex.printStackTrace();
 				Toast.makeText(MainActivity.this, "error:" + ex, Toast.LENGTH_LONG);
@@ -111,8 +126,13 @@ public class MainActivity extends Activity {
 		}
 
 		@Override
+		protected void onProgressUpdate(Object[] values) {
+			dhrystones.setText(getString(R.string.runningxof, iter, TRIES));
+		}
+
+		@Override
 		protected void onPostExecute(Object o) {
-			((TextView)findViewById(R.id.dhrystones)).setText(result);
+			dhrystones.setText(NumberFormat.getIntegerInstance().format(max));
 		}
 	}
 }
