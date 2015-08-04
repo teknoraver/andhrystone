@@ -44,30 +44,15 @@ public class MainActivity extends Activity {
 	private TextView architecture;
 	private TextView dhrystones;
 
-	private String detectX86() {
-		try {
-			BufferedReader in = new BufferedReader(new FileReader("/proc/cpuinfo"));
-			String line;
-			while((line = in.readLine()) != null) {
-				if(line.startsWith("flags	")) {
-					StringTokenizer flags = new StringTokenizer(line, " ");
-					while(flags.hasMoreTokens())
-						if(flags.nextToken().equals("lm"))
-							return "x86_64";
-					break;
-				}
-			}
-		} catch (IOException e) { }
-		return "x86";
-	}
-
 	private String detectCpu() {
 		if(Build.CPU_ABI.startsWith("arm64"))
 			return "arm64";
 		if(Build.CPU_ABI.startsWith("arm"))
 			return "arm";
+		if(Build.CPU_ABI.startsWith("x86_64"))
+			return "x86_64";
 		if(Build.CPU_ABI.startsWith("x86"))
-			return detectX86();
+			return "x86";
 		if(Build.CPU_ABI.startsWith("mips64"))
 			return "mips64";
 		if(Build.CPU_ABI.startsWith("mips"))
