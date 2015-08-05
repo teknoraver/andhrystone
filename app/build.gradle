@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+task executeScript(type:Exec) {
+    commandLine 'src/main/c/buildall'
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -8,17 +12,22 @@ android {
         applicationId "net.teknoraver.andhrystone"
         minSdkVersion 10
         targetSdkVersion 22
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.3"
     }
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+task buildBin(type: Exec) {
+    commandLine 'src/main/c/buildall'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+preBuild.dependsOn(buildBin)

@@ -1,0 +1,54 @@
+#!/bin/sh
+
+ndk=~/android-ndk-r10e
+
+binprefix() {
+	local archx bin
+	case $1 in
+	arm)	archx=arm-linux-androideabi
+		bin=arm-linux-androideabi
+		;;
+	arm64)
+		archx=aarch64-linux-android
+		bin=aarch64-linux-android
+		;;
+	x86)	archx=x86
+		bin=i686-linux-android
+		;;
+	x86_64)	archx=x86_64
+		bin=x86_64-linux-android
+		;;
+	mips)	archx=mipsel-linux-android
+		bin=mipsel-linux-android
+		;;
+	mips64)	archx=mips64el-linux-android
+		bin=mips64el-linux-android
+		;;
+	esac
+
+	echo $ndk/toolchains/$archx-4.9/prebuilt/linux-$(uname -m)/bin/$bin
+}
+
+agcc() {
+	local archx bin flags
+
+	case $AGCCARCH in
+	arm)	flags='-mfloat-abi=softfp -march=armv7-a -mtune=cortex-a9' ;;
+	arm64)	flags='-march=armv8-a -mtune=cortex-a57' ;;
+	x86)	flags='-march=atom' ;;
+	x86_64)	flags='-march=atom' ;;
+	mips)	flags='-march=mips32r2' ;;
+	mips64)	flags='-march=mips64r2' ;;
+	esac
+
+	$(binprefix $AGCCARCH)-gcc -fPIE -pie -O3 $flags --sysroot=$ndk/platforms/android-21/arch-$AGCCARCH "$@"
+}
+
+mkdir -p src/main/assets
+for i in arm arm64 x86 x86_64 mips mips64; do
+	AGCCARCH=$i
+	agcc -c src/main/c/dry.c -o /tmp/dry$$.o -Wall
+	agcc src/main/c/dry.c /tmp/dry$$.o -o src/main/assets/dry-$i -Wall -DPASS2
+	rm -f /tmp/dry$$.o
+	$(binprefix $AGCCARCH)-strip -s -R.comment src/main/assets/dry-$i
+done
