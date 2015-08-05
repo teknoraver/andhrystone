@@ -1,9 +1,5 @@
 apply plugin: 'com.android.application'
 
-task executeScript(type:Exec) {
-	commandLine 'src/main/c/buildall'
-}
-
 android {
 	compileSdkVersion 22
 	buildToolsVersion "22.0.1"
