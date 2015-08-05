@@ -1,7 +1,5 @@
 #!/bin/sh
 
-ndk=~/android-ndk-r10e
-
 binprefix() {
 	local archx bin
 	case $1 in
@@ -26,7 +24,7 @@ binprefix() {
 		;;
 	esac
 
-	echo $ndk/toolchains/$archx-4.9/prebuilt/linux-$(uname -m)/bin/$bin
+	echo $ANDROID_NDK/toolchains/$archx-4.9/prebuilt/linux-$(uname -m)/bin/$bin
 }
 
 agcc() {
@@ -41,7 +39,7 @@ agcc() {
 	mips64)	flags='-march=mips64r2' ;;
 	esac
 
-	$(binprefix $AGCCARCH)-gcc -fPIE -pie -O3 $flags --sysroot=$ndk/platforms/android-21/arch-$AGCCARCH "$@"
+	$(binprefix $AGCCARCH)-gcc -fPIE -pie -O3 $flags --sysroot=$ANDROID_NDK/platforms/android-21/arch-$AGCCARCH "$@"
 }
 
 mkdir -p src/main/assets
