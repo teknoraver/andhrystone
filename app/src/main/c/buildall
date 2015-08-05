@@ -28,7 +28,7 @@ binprefix() {
 }
 
 agcc() {
-	local archx bin flags
+	local flags
 
 	case $AGCCARCH in
 	arm)	flags='-mfloat-abi=softfp -march=armv7-a -mtune=cortex-a9' ;;
