@@ -1,5 +1,5 @@
 /****************** "DHRYSTONE" Benchmark Program ***************************/
-#define Version "C, Version 2.2"
+#define Version "C, Version 2.3"
 /*  File:       dhry_1.c (part 2 of 3)
  *  Author:     Reinhold P. Weicker
  *              Siemens Nixdorf, Paderborn/Germany
@@ -349,8 +349,12 @@
 /* Compiler and system dependent definitions: */
 
 /* variables for time measurement: */
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sched.h>
 
 /* Use gettimeofday(), courtesy of Broadcom ;) */
 #include <sys/time.h>
@@ -484,25 +488,31 @@ int main (int argc, char *argv[])
         Str_30          Str_1_Loc;
         Str_30          Str_2_Loc;
   REG   int             Run_Index;
-  REG   int             Number_Of_Runs;
+  REG   int             Number_Of_Runs = NUMBER_OF_RUNS;
   char buf[4096];
+  int nthreads = 1;
+
+  int c;
+  int i;
+  int pid = 0;
+  int cpus = sysconf(_SC_NPROCESSORS_ONLN);
+
+  while((c = getopt(argc, argv, "t::r:")) != -1) {
+    switch(c) {
+    case 't':
+      nthreads = optarg ? atoi(optarg) : cpus;
+      break;
+    case 'r':
+      Number_Of_Runs = atoi(optarg);
+      break;
+    }
+  }
 
   /* Arguments */
-  if (argc > 2)
+  if(optind != argc)
   {
-     printf ("Usage: %s [number of loops]\n", argv[0]);
+     printf ("Usage: %s [-r runs] [-t]\n", argv[0]);
      exit (1);
-  }
-  if (argc == 2)
-  {
-     Number_Of_Runs = atoi (argv[1]);
-  } else
-  {
-     Number_Of_Runs = NUMBER_OF_RUNS;
-  }
-  if (Number_Of_Runs <= 0)
-  {
-     Number_Of_Runs = NUMBER_OF_RUNS;
   }
 
   /* Initializations */
@@ -537,7 +547,26 @@ int main (int argc, char *argv[])
   printf ("Using %s, HZ=%d\n", CLOCK_TYPE, HZ);
   printf ("\n");
 
+  if(nthreads > 1) {
+    printf ("Running %d threads\n", nthreads);
+    printf ("\n");
+  }
   Done = false;
+  if(nthreads > 1)
+    for(i = 0; i < nthreads; i++) {
+      cpu_set_t mask;
+      CPU_ZERO(&mask);
+      CPU_SET(i % cpus, &mask);
+      pid = fork();
+      if(!pid)
+          break;
+      sched_setaffinity(pid, sizeof(cpu_set_t), &mask);
+    }
+  if(pid) {
+    int status = 0;
+    while(wait(&status) > 0);
+    return 0;
+  }
   while (!Done) {
 
     printf ("Trying %d runs through Dhrystone:\n", Number_Of_Runs);

@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 		final TextView model = (TextView)findViewById(R.id.model);
 		final TextView abi = (TextView)findViewById(R.id.abi);
 		final TextView architecture = (TextView)findViewById(R.id.arch);
-		dhrystones = (TextView)findViewById(R.id.dhrystones);
+		dhrystones = (TextView)findViewById(R.id.dhrystones_st);
 
 		manufacturer.setText(Build.MANUFACTURER);
 		brand.setText(Build.BRAND);
