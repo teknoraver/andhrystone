@@ -22,28 +22,21 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.NumberFormat;
-import java.util.StringTokenizer;
 
 public class MainActivity extends Activity {
-	private String arch = detectCpu();
-	private TextView manufacturer;
-	private TextView brand;
-	private TextView model;
-	private TextView abi;
-	private TextView architecture;
+	private final String arch = detectCpu();
 	private TextView dhrystones;
 
+	@SuppressWarnings("deprecation")
 	private String detectCpu() {
 		if(Build.CPU_ABI.startsWith("arm64"))
 			return "arm64";
@@ -61,16 +54,17 @@ public class MainActivity extends Activity {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		manufacturer = (TextView)findViewById(R.id.manufacturer);
-		brand = (TextView)findViewById(R.id.brand);
-		model = (TextView)findViewById(R.id.model);
-		abi = (TextView)findViewById(R.id.abi);
-		architecture = (TextView)findViewById(R.id.arch);
+		final TextView manufacturer = (TextView)findViewById(R.id.manufacturer);
+		final TextView brand = (TextView)findViewById(R.id.brand);
+		final TextView model = (TextView)findViewById(R.id.model);
+		final TextView abi = (TextView)findViewById(R.id.abi);
+		final TextView architecture = (TextView)findViewById(R.id.arch);
 		dhrystones = (TextView)findViewById(R.id.dhrystones);
 
 		manufacturer.setText(Build.MANUFACTURER);
@@ -99,37 +93,41 @@ public class MainActivity extends Activity {
 		@Override
 		protected Void doInBackground(Integer... params) {
 			tries = params[0];
-			String binary = "dry-" + arch;
+			final String binary = "dry-" + arch;
 			final File file = new File(getFilesDir(), binary);
 			try {
 				getFilesDir().mkdirs();
-				final InputStream in = getAssets().open(binary);
-				final FileOutputStream out = new FileOutputStream(file);
-				final byte buf[] = new byte[65536];
-				int len;
-				while ((len = in.read(buf)) > 0)
-					out.write(buf, 0, len);
-				in.close();
-				out.close();
+
+				{
+					final InputStream in = getAssets().open(binary);
+					final FileOutputStream out = new FileOutputStream(file);
+					final byte buf[] = new byte[65536];
+					for (int len; (len = in.read(buf)) > 0; )
+						out.write(buf, 0, len);
+					in.close();
+					out.close();
+				}
 				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
 				for(int i = 1; i <= tries; i++) {
 					publishProgress(i);
-					len = Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream().read(buf);
-					max = Math.max(Integer.valueOf(new String(buf, 0, len)), max);
+					final BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream()));
+					for(String line; (line = stdout.readLine()) != null; ) {
+						if(line.startsWith("Dhrystones per Second:")) {
+							int len = Integer.valueOf(line.substring(line.lastIndexOf('	') + 1));
+							max = Math.max(len, max);
+							break;
+						}
+					}
 				}
-			} catch (final IOException ex) {
+			} catch (final IOException | InterruptedException ex) {
 				ex.printStackTrace();
-				Toast.makeText(MainActivity.this, "error:" + ex, Toast.LENGTH_LONG);
-				finish();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 			return null;
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... i) {
-			dhrystones.setText(getString(R.string.runningxof, i[0].intValue(), tries));
+			dhrystones.setText(getString(R.string.runningxof, i[0], tries));
 		}
 
 		@Override

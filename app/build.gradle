@@ -10,8 +10,8 @@ model {
 			applicationId = "net.teknoraver.andhrystone"
 			minSdkVersion.apiLevel = 10
 			targetSdkVersion.apiLevel = 22
-			versionCode = 5
-			versionName = "1.4"
+			versionCode = 6
+			versionName = "1.4.1"
 		}
 	}
 

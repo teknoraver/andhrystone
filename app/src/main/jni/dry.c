@@ -25,12 +25,12 @@
  *
  *  Collection of Results:
  *              Reinhold Weicker (address see above) and
- *
+ *              
  *              Rick Richardson
  *              PC Research. Inc.
  *              94 Apple Orchard Drive
  *              Tinton Falls, NJ 07724
- *                      Phone:  (201) 389-8963 (9-17 EST)
+ *                      Phone:  (201) 389-8963 (9-17 EST)               
  *                      Usenet: ...!uunet!pcrat!rick
  *
  *      Please send results to Rick Richardson and/or Reinhold Weicker.
@@ -69,7 +69,7 @@
  *      -DTIME
  *              The "times" function of UNIX (returning process times)
  *              or the "time" function (returning wallclock time)
- *              is used for measurement.
+ *              is used for measurement. 
  *              For single user machines, "time ()" is adequate. For
  *              multi-user machines where you cannot get single-user
  *              access, use the "times ()" function. If you have
@@ -123,7 +123,7 @@
  *      version previously distributed by Reinhold Weicker.
  *
  *      At several places in the benchmark, code has been added,
- *      but within the measurement loop only in branches that
+ *      but within the measurement loop only in branches that 
  *      are not executed. The intention is that optimizing compilers
  *      should be prevented from moving code out of the measurement
  *      loop, or from removing code altogether. Since the statements
@@ -201,23 +201,23 @@
  *   different from the Ada version.]
  *
  *  The following program contains statements of a high level programming
- *  language (here: C) in a distribution considered representative:
+ *  language (here: C) in a distribution considered representative:           
  *
  *    assignments                  52 (51.0 %)
  *    control statements           33 (32.4 %)
  *    procedure, function calls    17 (16.7 %)
  *
  *  103 statements are dynamically executed. The program is balanced with
- *  respect to the three aspects:
+ *  respect to the three aspects:                                             
  *
  *    - statement type
  *    - operand type
  *    - operand locality
- *         operand global, local, parameter, or constant.
+ *         operand global, local, parameter, or constant.                     
  *
- *  The combination of these three aspects is balanced only approximately.
+ *  The combination of these three aspects is balanced only approximately.    
  *
- *  1. Statement Type:
+ *  1. Statement Type:                                                        
  *  -----------------             number
  *
  *     V1 = V2                     9
@@ -261,9 +261,9 @@
  *       library procedure    1
  *     X = F (...)
  *             function  call      6
- *       user function        5
- *       library function     1
- *                                --
+ *       user function        5                                         
+ *       library function     1                                               
+ *                                --                                          
  *                                17       17
  *                                        ---
  *                                        103
@@ -276,10 +276,10 @@
  *                          number    approximate
  *                                    percentage
  *
- *    Arithmetic             32          50.8
+ *    Arithmetic             32          50.8                                 
  *
- *       +                     21          33.3
- *       -                      7          11.1
+ *       +                     21          33.3                              
+ *       -                      7          11.1                              
  *       *                      3           4.8
  *       / (int div)            1           1.6
  *
@@ -297,7 +297,7 @@
  *       && (AND-THEN)          1            1.6
  *       |  (OR)                1            1.6
  *       !  (NOT)               2            3.2
- *
+ * 
  *                           --          -----
  *                           63          100.1
  *
@@ -317,10 +317,10 @@
  *                           242       100.0 %
  *
  *  When there is an access path leading to the final operand (e.g. a record
- *  component), only the final data type on the access path is counted.
+ *  component), only the final data type on the access path is counted.       
  *
  *
- *  4. Operand Locality:
+ *  4. Operand Locality:                                                      
  *  -------------------
  *                                number    approximate
  *                                          percentage
@@ -349,16 +349,17 @@
 /* Compiler and system dependent definitions: */
 
 /* variables for time measurement: */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
                 /* Use times(2) time function unless    */
                 /* explicitly defined otherwise         */
 #define CLOCK_TYPE "times()"
 #include <sys/types.h>
 #include <sys/times.h>
-#include <stdlib.h>
-#include <string.h>
 #ifndef HZ	/* Added by SP 900619 */
-#include <asm/param.h> /* If your system doesn't have this, use -DHZ=xxx */
+#include <sys/param.h> /* If your system doesn't have this, use -DHZ=xxx */
 #else
 	*** You must define HZ!!! ***
 #endif /* HZ */
@@ -371,8 +372,6 @@ struct tms      time_info;
                 /* Measurements should last at least about 2 seconds */
 #define Start_Timer() times(&time_info); Begin_Time=(long)time_info.tms_utime
 #define Stop_Timer()  times(&time_info); End_Time = (long)time_info.tms_utime
-
-
 
 #define Mic_secs_Per_Second     1000000.0
 #define NUMBER_OF_RUNS		50000 /* Default number of runs */
@@ -401,7 +400,7 @@ struct tms      time_info;
 #include <stdio.h>
                 /* for strcpy, strcmp */
 
-#define Null 0
+#define Null 0 
                 /* Value of a Null pointer */
 #define true  1
 #define false 0
@@ -414,7 +413,7 @@ typedef char    Str_30 [31];
 typedef int     Arr_1_Dim [50];
 typedef int     Arr_2_Dim [50] [50];
 
-typedef struct record
+typedef struct record 
     {
     struct record *Ptr_Comp;
     Enumeration    Discr;
@@ -434,8 +433,6 @@ typedef struct record
                   } var_3;
           } variant;
       } Rec_Type, *Rec_Pointer;
-
-Boolean Func_3 (Enumeration);
 
 #ifndef PASS2
 
@@ -474,18 +471,17 @@ float           Microseconds,
 
 /* end of variables for time measurement */
 
-void Proc_1 (Rec_Pointer);
-void Proc_2 (One_Fifty*);
-void Proc_3 (Rec_Pointer*);
-void Proc_4 (void);
-void Proc_5 (void);
-void Proc_6 (Enumeration, Enumeration *);
-void Proc_7 ();
-void Proc_8 ();
-Boolean Func_2 (Str_30, Str_30);
-Boolean Func_3 (Enumeration);
+Boolean Func_2(Str_30, Str_30);
+void Proc_1(REG Rec_Pointer);
+void Proc_2(One_Fifty*);
+void Proc_3(Rec_Pointer *);
+void Proc_4();
+void Proc_5();
+void Proc_6(Enumeration, Enumeration *);
+void Proc_7(One_Fifty, One_Fifty, One_Fifty *);
+void Proc_8(Arr_1_Dim, Arr_2_Dim, int, int);
 
-int main (argc, argv) int argc; char *argv[];
+int main (int argc, char *argv[])
 /*****/
 
   /* main program, corresponds to procedures        */
@@ -528,7 +524,7 @@ int main (argc, argv) int argc; char *argv[];
   Ptr_Glob->Discr                       = Ident_1;
   Ptr_Glob->variant.var_1.Enum_Comp     = Ident_3;
   Ptr_Glob->variant.var_1.Int_Comp      = 40;
-  strcpy (Ptr_Glob->variant.var_1.Str_Comp,
+  strcpy (Ptr_Glob->variant.var_1.Str_Comp, 
           "DHRYSTONE PROGRAM, SOME STRING");
   strcpy (Str_1_Loc, "DHRYSTONE PROGRAM, 1'ST STRING");
 
@@ -538,8 +534,23 @@ int main (argc, argv) int argc; char *argv[];
         /* Warning: With 16-Bit processors and Number_Of_Runs > 32000,  */
         /* overflow may occur for this array element.                   */
 
+  printf ("\n");
+  printf ("Dhrystone Benchmark, Version %s\n", Version);
+  if (Reg)
+  {
+    printf ("Program compiled with 'register' attribute\n");
+  }
+  else
+  {
+    printf ("Program compiled without 'register' attribute\n");
+  }
+  printf ("Using %s, HZ=%d\n", CLOCK_TYPE, HZ);
+  printf ("\n");
+
   Done = false;
   while (!Done) {
+
+    printf ("Trying %d runs through Dhrystone:\n", Number_Of_Runs);
 
     /***************/
     /* Start timer */
@@ -603,17 +614,71 @@ int main (argc, argv) int argc; char *argv[];
 
     if (User_Time < Too_Small_Time)
     {
+      printf ("Measured time too small to obtain meaningful results\n");
       Number_Of_Runs = Number_Of_Runs * 10;
+      printf ("\n");
     } else Done = true;
   }
 
-    Microseconds = (float) User_Time * Mic_secs_Per_Second
+  fprintf (stderr, "Final values of the variables used in the benchmark:\n");
+  fprintf (stderr, "\n");
+  fprintf (stderr, "Int_Glob:            %d\n", Int_Glob);
+  fprintf (stderr, "        should be:   %d\n", 5);
+  fprintf (stderr, "Bool_Glob:           %d\n", Bool_Glob);
+  fprintf (stderr, "        should be:   %d\n", 1);
+  fprintf (stderr, "Ch_1_Glob:           %c\n", Ch_1_Glob);
+  fprintf (stderr, "        should be:   %c\n", 'A');
+  fprintf (stderr, "Ch_2_Glob:           %c\n", Ch_2_Glob);
+  fprintf (stderr, "        should be:   %c\n", 'B');
+  fprintf (stderr, "Arr_1_Glob[8]:       %d\n", Arr_1_Glob[8]);
+  fprintf (stderr, "        should be:   %d\n", 7);
+  fprintf (stderr, "Arr_2_Glob[8][7]:    %d\n", Arr_2_Glob[8][7]);
+  fprintf (stderr, "        should be:   Number_Of_Runs + 10\n");
+  fprintf (stderr, "Ptr_Glob->\n");
+  fprintf (stderr, "  Ptr_Comp:          %p\n", Ptr_Glob->Ptr_Comp);
+  fprintf (stderr, "        should be:   (implementation-dependent)\n");
+  fprintf (stderr, "  Discr:             %d\n", Ptr_Glob->Discr);
+  fprintf (stderr, "        should be:   %d\n", 0);
+  fprintf (stderr, "  Enum_Comp:         %d\n", Ptr_Glob->variant.var_1.Enum_Comp);
+  fprintf (stderr, "        should be:   %d\n", 2);
+  fprintf (stderr, "  Int_Comp:          %d\n", Ptr_Glob->variant.var_1.Int_Comp);
+  fprintf (stderr, "        should be:   %d\n", 17);
+  fprintf (stderr, "  Str_Comp:          %s\n", Ptr_Glob->variant.var_1.Str_Comp);
+  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
+  fprintf (stderr, "Next_Ptr_Glob->\n");
+  fprintf (stderr, "  Ptr_Comp:          %p\n", Next_Ptr_Glob->Ptr_Comp);
+  fprintf (stderr, "        should be:   (implementation-dependent), same as above\n");
+  fprintf (stderr, "  Discr:             %d\n", Next_Ptr_Glob->Discr);
+  fprintf (stderr, "        should be:   %d\n", 0);
+  fprintf (stderr, "  Enum_Comp:         %d\n", Next_Ptr_Glob->variant.var_1.Enum_Comp);
+  fprintf (stderr, "        should be:   %d\n", 1);
+  fprintf (stderr, "  Int_Comp:          %d\n", Next_Ptr_Glob->variant.var_1.Int_Comp);
+  fprintf (stderr, "        should be:   %d\n", 18);
+  fprintf (stderr, "  Str_Comp:          %s\n",
+                                Next_Ptr_Glob->variant.var_1.Str_Comp);
+  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
+  fprintf (stderr, "Int_1_Loc:           %d\n", Int_1_Loc);
+  fprintf (stderr, "        should be:   %d\n", 5);
+  fprintf (stderr, "Int_2_Loc:           %d\n", Int_2_Loc);
+  fprintf (stderr, "        should be:   %d\n", 13);
+  fprintf (stderr, "Int_3_Loc:           %d\n", Int_3_Loc);
+  fprintf (stderr, "        should be:   %d\n", 7);
+  fprintf (stderr, "Enum_Loc:            %d\n", Enum_Loc);
+  fprintf (stderr, "        should be:   %d\n", 1);
+  fprintf (stderr, "Str_1_Loc:           %s\n", Str_1_Loc);
+  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, 1'ST STRING\n");
+  fprintf (stderr, "Str_2_Loc:           %s\n", Str_2_Loc);
+  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, 2'ND STRING\n");
+  fprintf (stderr, "\n");
+
+
+    Microseconds = (float) User_Time * Mic_secs_Per_Second 
                         / ((float) HZ * ((float) Number_Of_Runs));
     Dhrystones_Per_Second = ((float) HZ * (float) Number_Of_Runs)
                         / (float) User_Time;
 
-    printf ("%.0f", Dhrystones_Per_Second);
-
+    printf ("Microseconds for one run through Dhrystone:	%.1f\n", Microseconds);
+    printf ("Dhrystones per Second:				%.0f\n", Dhrystones_Per_Second);
     return 0;
 }
 
@@ -624,27 +689,27 @@ void Proc_1 (Ptr_Val_Par)
 REG Rec_Pointer Ptr_Val_Par;
     /* executed once */
 {
-  REG Rec_Pointer Next_Record = Ptr_Val_Par->Ptr_Comp;
+  REG Rec_Pointer Next_Record = Ptr_Val_Par->Ptr_Comp;  
                                         /* == Ptr_Glob_Next */
   /* Local variable, initialized with Ptr_Val_Par->Ptr_Comp,    */
   /* corresponds to "rename" in Ada, "with" in Pascal           */
-
-  structassign (*Ptr_Val_Par->Ptr_Comp, *Ptr_Glob);
+  
+  structassign (*Ptr_Val_Par->Ptr_Comp, *Ptr_Glob); 
   Ptr_Val_Par->variant.var_1.Int_Comp = 5;
-  Next_Record->variant.var_1.Int_Comp
+  Next_Record->variant.var_1.Int_Comp 
         = Ptr_Val_Par->variant.var_1.Int_Comp;
   Next_Record->Ptr_Comp = Ptr_Val_Par->Ptr_Comp;
   Proc_3 (&Next_Record->Ptr_Comp);
-    /* Ptr_Val_Par->Ptr_Comp->Ptr_Comp
+    /* Ptr_Val_Par->Ptr_Comp->Ptr_Comp 
                         == Ptr_Glob->Ptr_Comp */
   if (Next_Record->Discr == Ident_1)
     /* then, executed */
   {
     Next_Record->variant.var_1.Int_Comp = 6;
-    Proc_6 (Ptr_Val_Par->variant.var_1.Enum_Comp,
+    Proc_6 (Ptr_Val_Par->variant.var_1.Enum_Comp, 
            &Next_Record->variant.var_1.Enum_Comp);
     Next_Record->Ptr_Comp = Ptr_Glob->Ptr_Comp;
-    Proc_7 (Next_Record->variant.var_1.Int_Comp, 10,
+    Proc_7 (Next_Record->variant.var_1.Int_Comp, 10, 
            &Next_Record->variant.var_1.Int_Comp);
   }
   else /* not executed */
@@ -659,7 +724,7 @@ void Proc_2 (Int_Par_Ref)
 
 One_Fifty   *Int_Par_Ref;
 {
-  One_Fifty  Int_Loc;
+  One_Fifty  Int_Loc;  
   Enumeration   Enum_Loc;
 
   Int_Loc = *Int_Par_Ref + 10;
@@ -738,6 +803,8 @@ register int    l;
 extern  int     Int_Glob;
 extern  char    Ch_1_Glob;
 
+Boolean Func_3(Enumeration);
+
 
 void Proc_6 (Enum_Val_Par, Enum_Ref_Par)
 /*********************************/
@@ -753,10 +820,10 @@ Enumeration *Enum_Ref_Par;
     *Enum_Ref_Par = Ident_4;
   switch (Enum_Val_Par)
   {
-    case Ident_1:
+    case Ident_1: 
       *Enum_Ref_Par = Ident_1;
       break;
-    case Ident_2:
+    case Ident_2: 
       if (Int_Glob > 100)
         /* then */
       *Enum_Ref_Par = Ident_1;
@@ -766,7 +833,7 @@ Enumeration *Enum_Ref_Par;
       *Enum_Ref_Par = Ident_2;
       break;
     case Ident_4: break;
-    case Ident_5:
+    case Ident_5: 
       *Enum_Ref_Par = Ident_3;
       break;
   } /* switch */
@@ -775,7 +842,7 @@ Enumeration *Enum_Ref_Par;
 
 void Proc_7 (Int_1_Par_Val, Int_2_Par_Val, Int_Par_Ref)
 /**********************************************/
-    /* executed three times                                      */
+    /* executed three times                                      */ 
     /* first call:      Int_1_Par_Val == 2, Int_2_Par_Val == 3,  */
     /*                  Int_Par_Ref becomes 7                    */
     /* second call:     Int_1_Par_Val == 10, Int_2_Par_Val == 5, */
