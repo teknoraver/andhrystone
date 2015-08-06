@@ -33,7 +33,7 @@ import java.io.InputStreamReader;
 import java.text.NumberFormat;
 
 public class MainActivity extends Activity {
-	private String arch = detectCpu();
+	private final String arch = detectCpu();
 	private TextView dhrystones;
 
 	@SuppressWarnings("deprecation")
@@ -60,11 +60,11 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		TextView manufacturer = (TextView)findViewById(R.id.manufacturer);
-		TextView brand = (TextView)findViewById(R.id.brand);
-		TextView model = (TextView)findViewById(R.id.model);
-		TextView abi = (TextView)findViewById(R.id.abi);
-		TextView architecture = (TextView)findViewById(R.id.arch);
+		final TextView manufacturer = (TextView)findViewById(R.id.manufacturer);
+		final TextView brand = (TextView)findViewById(R.id.brand);
+		final TextView model = (TextView)findViewById(R.id.model);
+		final TextView abi = (TextView)findViewById(R.id.abi);
+		final TextView architecture = (TextView)findViewById(R.id.arch);
 		dhrystones = (TextView)findViewById(R.id.dhrystones);
 
 		manufacturer.setText(Build.MANUFACTURER);
@@ -93,7 +93,7 @@ public class MainActivity extends Activity {
 		@Override
 		protected Void doInBackground(Integer... params) {
 			tries = params[0];
-			String binary = "dry-" + arch;
+			final String binary = "dry-" + arch;
 			final File file = new File(getFilesDir(), binary);
 			try {
 				if(!getFilesDir().mkdirs())
@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
 				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
 				for(int i = 1; i <= tries; i++) {
 					publishProgress(i);
-					BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream()));
+					final BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream()));
 					for(String line; (line = stdout.readLine()) != null; ) {
 						if(line.startsWith("Dhrystones per Second:")) {
 							int len = Integer.valueOf(line.substring(line.lastIndexOf('	') + 1));
