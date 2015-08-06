@@ -96,8 +96,7 @@ public class MainActivity extends Activity {
 			final String binary = "dry-" + arch;
 			final File file = new File(getFilesDir(), binary);
 			try {
-				if(!getFilesDir().mkdirs())
-					throw new IOException("Can't create " + getFilesDir());
+				getFilesDir().mkdirs();
 
 				{
 					final InputStream in = getAssets().open(binary);
