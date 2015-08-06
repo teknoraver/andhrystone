@@ -81,18 +81,23 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(arch != null)
-			new Dhrystone().execute(5);
+		if(arch != null) {
+			new Dhrystone().execute(false);
+			new Dhrystone().execute(true);
+		}
 	}
 
-	private class Dhrystone extends AsyncTask<Integer, Integer, Void>
+	private class Dhrystone extends AsyncTask<Boolean, Integer, Void>
 	{
-		private int tries;
+		private static final int tries = 5;
 		private int max = 0;
+		private boolean mt;
+		private TextView text;
 
 		@Override
-		protected Void doInBackground(Integer... params) {
-			tries = params[0];
+		protected Void doInBackground(Boolean... params) {
+			mt = params[0];
+			text = (TextView)findViewById(mt ? R.id.dhrystones_mt : R.id.dhrystones_st);
 			final String binary = "dry-" + arch;
 			final File file = new File(getFilesDir(), binary);
 			try {
@@ -110,14 +115,12 @@ public class MainActivity extends Activity {
 				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
 				for(int i = 1; i <= tries; i++) {
 					publishProgress(i);
-					final BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath()).getInputStream()));
-					for(String line; (line = stdout.readLine()) != null; ) {
-						if(line.startsWith("Dhrystones per Second:")) {
-							int len = Integer.valueOf(line.substring(line.lastIndexOf('	') + 1));
-							max = Math.max(len, max);
-							break;
-						}
-					}
+					final BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath() + (mt ? " -bt" : " -b")).getInputStream()));
+					int threads = Integer.parseInt(stdout.readLine());
+					int sum = 0;
+					while(threads-- > 0)
+						sum += Integer.valueOf(Integer.parseInt(stdout.readLine()));
+					max = Math.max(sum, max);
 				}
 			} catch (final IOException | InterruptedException ex) {
 				ex.printStackTrace();
@@ -127,12 +130,12 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected void onProgressUpdate(Integer... i) {
-			dhrystones.setText(getString(R.string.runningxof, i[0], tries));
+			text.setText(getString(R.string.runningxof, i[0], tries));
 		}
 
 		@Override
 		protected void onPostExecute(Void o) {
-			dhrystones.setText(NumberFormat.getIntegerInstance().format(max));
+			text.setText(NumberFormat.getIntegerInstance().format(max));
 		}
 	}
 }

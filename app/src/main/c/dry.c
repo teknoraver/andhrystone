@@ -474,6 +474,8 @@ void Proc_6(Enumeration, Enumeration *);
 void Proc_7(One_Fifty, One_Fifty, One_Fifty *);
 void Proc_8(Arr_1_Dim, Arr_2_Dim, int, int);
 
+#define bprintf(...) if(!batch) printf(__VA_ARGS__)
+
 int main (int argc, char *argv[])
 /*****/
 
@@ -496,9 +498,13 @@ int main (int argc, char *argv[])
   int i;
   int pid = 0;
   int cpus = sysconf(_SC_NPROCESSORS_ONLN);
+  int batch = 0;
 
-  while((c = getopt(argc, argv, "t::r:")) != -1) {
+  while((c = getopt(argc, argv, "t::r:b")) != -1) {
     switch(c) {
+    case 'b':
+      batch = 1;
+      break;
     case 't':
       nthreads = optarg ? atoi(optarg) : cpus;
       break;
@@ -511,7 +517,7 @@ int main (int argc, char *argv[])
   /* Arguments */
   if(optind != argc)
   {
-     printf ("Usage: %s [-r runs] [-t]\n", argv[0]);
+     printf ("Usage: %s [-r runs] [-t] [-b]\n", argv[0]);
      exit (1);
   }
 
@@ -534,23 +540,26 @@ int main (int argc, char *argv[])
         /* Warning: With 16-Bit processors and Number_Of_Runs > 32000,  */
         /* overflow may occur for this array element.                   */
 
-  printf ("\n");
-  printf ("Dhrystone Benchmark, Version %s\n", Version);
+  bprintf ("\n");
+  bprintf ("Dhrystone Benchmark, Version %s\n", Version);
   if (Reg)
   {
-    printf ("Program compiled with 'register' attribute\n");
+    bprintf ("Program compiled with 'register' attribute\n");
   }
   else
   {
-    printf ("Program compiled without 'register' attribute\n");
+    bprintf ("Program compiled without 'register' attribute\n");
   }
-  printf ("Using %s, HZ=%d\n", CLOCK_TYPE, HZ);
-  printf ("\n");
+  bprintf ("Using %s, HZ=%d\n", CLOCK_TYPE, HZ);
+  bprintf ("\n");
 
-  if(nthreads > 1) {
-    printf ("Running %d threads\n", nthreads);
-    printf ("\n");
-  }
+  bprintf ("Running %d thread(s)\n", nthreads);
+  bprintf ("\n");
+
+  if(batch)
+	  printf("%d\n", nthreads);
+  fflush(stdout);
+
   Done = false;
   if(nthreads > 1)
     for(i = 0; i < nthreads; i++) {
@@ -569,7 +578,7 @@ int main (int argc, char *argv[])
   }
   while (!Done) {
 
-    printf ("Trying %d runs through Dhrystone:\n", Number_Of_Runs);
+    bprintf ("Trying %d runs through Dhrystone:\n", Number_Of_Runs);
 
     /***************/
     /* Start timer */
@@ -633,9 +642,9 @@ int main (int argc, char *argv[])
 
     if (User_Time < Too_Small_Time)
     {
-      printf ("Measured time too small to obtain meaningful results\n");
+      bprintf ("Measured time too small to obtain meaningful results\n");
       Number_Of_Runs = Number_Of_Runs * 10;
-      printf ("\n");
+      bprintf ("\n");
     } else Done = true;
   }
 
@@ -696,8 +705,10 @@ int main (int argc, char *argv[])
     Dhrystones_Per_Second = ((float) HZ * (float) Number_Of_Runs)
                         / (float) User_Time;
 
-    printf ("Microseconds for one run through Dhrystone:	%.1f\n", Microseconds);
-    printf ("Dhrystones per Second:				%.0f\n", Dhrystones_Per_Second);
+    bprintf ("Microseconds for one run through Dhrystone:	%.1f\n", Microseconds);
+    bprintf ("Dhrystones per Second:				%.0f\n", Dhrystones_Per_Second);
+    if(batch)
+      printf("%u\n", (unsigned)Dhrystones_Per_Second);
     return 0;
 }
 

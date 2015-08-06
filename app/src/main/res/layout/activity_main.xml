@@ -99,7 +99,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="@string/dhry"
+			android:text="@string/dhry_st"
 			android:layout_column="0"/>
 		<TextView
 			android:layout_width="fill_parent"
@@ -116,7 +116,7 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:textAppearance="?android:attr/textAppearanceLarge"
-		    android:text="@string/dhry"
+		    android:text="@string/dhry_mt"
 		    android:layout_column="0"/>
 		<TextView
 		    android:layout_width="fill_parent"

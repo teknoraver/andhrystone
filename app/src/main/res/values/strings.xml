@@ -5,7 +5,8 @@
 	<string name="model">Model</string>
 	<string name="abi">ABI</string>
 	<string name="arch">Architecture</string>
-	<string name="dhry">Dhrystones</string>
+	<string name="dhry_st">Dhrystones</string>
+	<string name="dhry_mt">Multi threaded\nDhrystones</string>
 	<string name="running">Running…</string>
 	<string name="unknown">Unknown</string>
 	<string name="runningxof">Running %1$d/%2$d</string>
