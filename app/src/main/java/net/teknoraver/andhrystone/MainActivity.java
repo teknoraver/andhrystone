@@ -93,6 +93,7 @@ public class MainActivity extends Activity {
 		private int max = 0;
 		private boolean mt;
 		private TextView text;
+		private boolean err;
 
 		@Override
 		protected Void doInBackground(Boolean... params) {
@@ -124,6 +125,7 @@ public class MainActivity extends Activity {
 				}
 			} catch (final IOException | InterruptedException ex) {
 				ex.printStackTrace();
+				err = true;
 			}
 			return null;
 		}
@@ -135,7 +137,10 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(Void o) {
-			text.setText(NumberFormat.getIntegerInstance().format(max));
+			if(err)
+				text.setText(R.string.unknown);
+			else
+				text.setText(NumberFormat.getIntegerInstance().format(max));
 		}
 	}
 }
