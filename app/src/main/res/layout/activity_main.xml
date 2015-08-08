@@ -1,10 +1,26 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:paddingLeft="@dimen/activity_horizontal_margin"
 	android:paddingRight="@dimen/activity_horizontal_margin"
 	android:paddingTop="@dimen/activity_vertical_margin"
 	android:paddingBottom="@dimen/activity_vertical_margin"
-	android:keepScreenOn="true">
+	android:keepScreenOn="true"
+	tools:context=".MainActivity">
+
+	<TableRow
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/dinfo"
+			android:layout_column="0"
+			android:layout_span="2"/>
+	</TableRow>
 
 	<TableRow
 		android:layout_width="fill_parent"
@@ -12,13 +28,13 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@string/brand"
 			android:layout_column="0"/>
 		<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:id="@+id/brand"
 			android:layout_column="1"/>
 	</TableRow>
@@ -29,13 +45,13 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@string/manufacturer"
 			android:layout_column="0"/>
 		<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:id="@+id/manufacturer"
 			android:layout_column="1"/>
 	</TableRow>
@@ -46,13 +62,13 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@string/model"
 			android:layout_column="0"/>
 		<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:id="@+id/model"
 			android:layout_column="1"/>
 	</TableRow>
@@ -63,13 +79,13 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@string/abi"
 			android:layout_column="0"/>
 		<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:id="@+id/abi"
 			android:layout_column="1"/>
 	</TableRow>
@@ -80,15 +96,45 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@string/arch"
 			android:layout_column="0"/>
 		<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textAppearance="?android:attr/textAppearanceMedium"
 			android:text="@string/unknown"
 			android:id="@+id/arch"
+			android:layout_column="1"/>
+	</TableRow>
+
+	<TableRow
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/dhrystones"
+			android:layout_column="0"
+			android:layout_span="2"/>
+	</TableRow>
+
+	<TableRow
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="@string/dhry_st"
+			android:layout_column="0"/>
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:id="@+id/dhrystones_st"
 			android:layout_column="1"/>
 	</TableRow>
 
@@ -98,32 +144,15 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="@string/dhry_st"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="@string/dhry_mt"
 			android:layout_column="0"/>
 		<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:id="@+id/dhrystones_st"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:id="@+id/dhrystones_mt"
 			android:layout_column="1"/>
-	</TableRow>
-
-	<TableRow
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content">
-		<TextView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:textAppearance="?android:attr/textAppearanceLarge"
-		    android:text="@string/dhry_mt"
-		    android:layout_column="0"/>
-		<TextView
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:textAppearance="?android:attr/textAppearanceLarge"
-		    android:id="@+id/dhrystones_mt"
-		    android:layout_column="1"/>
 	</TableRow>
 
 </TableLayout>
