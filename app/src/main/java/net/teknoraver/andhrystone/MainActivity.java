@@ -40,7 +40,6 @@ public class MainActivity extends Activity {
 	private final String arch = detectCpu();
 	private TextView dhrystones_st;
 	private TextView dhrystones_mt;
-	private Menu menu;
 
 	@SuppressWarnings("deprecation")
 	private String detectCpu() {
@@ -99,8 +98,7 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
-		menu = m;
+	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu, menu);
 		return true;
 	}
@@ -133,7 +131,8 @@ public class MainActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-			private class Dhrystone extends AsyncTask<Boolean, Integer, Void>
+
+	private class Dhrystone extends AsyncTask<Boolean, Integer, Void>
 	{
 		private static final int tries = 5;
 		private int max = 0;
@@ -166,7 +165,7 @@ public class MainActivity extends Activity {
 					int threads = Integer.parseInt(stdout.readLine());
 					int sum = 0;
 					while(threads-- > 0)
-						sum += Integer.valueOf(Integer.parseInt(stdout.readLine()));
+						sum += Integer.parseInt(stdout.readLine());
 					max = Math.max(sum, max);
 				}
 			} catch (final IOException | InterruptedException ex) {
