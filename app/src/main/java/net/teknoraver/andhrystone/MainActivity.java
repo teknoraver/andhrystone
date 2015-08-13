@@ -19,9 +19,13 @@
 package net.teknoraver.andhrystone;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -34,7 +38,9 @@ import java.text.NumberFormat;
 
 public class MainActivity extends Activity {
 	private final String arch = detectCpu();
-	private TextView dhrystones;
+	private TextView dhrystones_st;
+	private TextView dhrystones_mt;
+	private Menu menu;
 
 	@SuppressWarnings("deprecation")
 	private String detectCpu() {
@@ -65,7 +71,8 @@ public class MainActivity extends Activity {
 		final TextView model = (TextView)findViewById(R.id.model);
 		final TextView abi = (TextView)findViewById(R.id.abi);
 		final TextView architecture = (TextView)findViewById(R.id.arch);
-		dhrystones = (TextView)findViewById(R.id.dhrystones_st);
+		dhrystones_st = (TextView)findViewById(R.id.dhrystones_st);
+		dhrystones_mt = (TextView)findViewById(R.id.dhrystones_mt);
 
 		manufacturer.setText(Build.MANUFACTURER);
 		brand.setText(Build.BRAND);
@@ -74,20 +81,59 @@ public class MainActivity extends Activity {
 
 		if(arch != null)
 			architecture.setText(arch);
-		else
-			dhrystones.setText(R.string.unknown);
+		else {
+			dhrystones_st.setText(R.string.unknown);
+			dhrystones_mt.setText(R.string.unknown);
+		}
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
 		if(arch != null) {
+			dhrystones_st.setText("");
+			dhrystones_mt.setText("");
 			new Dhrystone().execute(false);
 			new Dhrystone().execute(true);
 		}
 	}
 
-	private class Dhrystone extends AsyncTask<Boolean, Integer, Void>
+	@Override
+	public boolean onCreateOptionsMenu(Menu m) {
+		menu = m;
+		getMenuInflater().inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.share:
+			String sharetxt = getString(R.string.sharetxt,
+				Build.BRAND,
+				Build.MANUFACTURER,
+				Build.MODEL,
+				Build.CPU_ABI,
+				dhrystones_st.getText(),
+				dhrystones_mt.getText()
+			);
+			startActivity(new Intent(Intent.ACTION_SEND)
+				.setType("text/plain")
+				.putExtra(Intent.EXTRA_TITLE, Build.MODEL + " Andhrystone result")
+				.putExtra(Intent.EXTRA_TEXT, sharetxt));
+			return true;
+		case R.id.about:
+			new AlertDialog.Builder(this)
+				.setTitle(R.string.app_name)
+				.setMessage(R.string.desc)
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.show();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+			private class Dhrystone extends AsyncTask<Boolean, Integer, Void>
 	{
 		private static final int tries = 5;
 		private int max = 0;
