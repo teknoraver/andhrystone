@@ -93,7 +93,6 @@ public class MainActivity extends Activity {
 			dhrystones_st.setText("");
 			dhrystones_mt.setText("");
 			new Dhrystone().execute(false);
-			new Dhrystone().execute(true);
 		}
 	}
 
@@ -118,7 +117,7 @@ public class MainActivity extends Activity {
 			);
 			startActivity(new Intent(Intent.ACTION_SEND)
 				.setType("text/plain")
-				.putExtra(Intent.EXTRA_TITLE, Build.MODEL + " Andhrystone result")
+				.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.sharesub, Build.MODEL))
 				.putExtra(Intent.EXTRA_TEXT, sharetxt));
 			return true;
 		case R.id.about:
@@ -186,6 +185,8 @@ public class MainActivity extends Activity {
 				text.setText(R.string.unknown);
 			else
 				text.setText(NumberFormat.getIntegerInstance().format(max));
+			if(!mt)
+				new Dhrystone().execute(true);
 		}
 	}
 }
