@@ -1,7 +1,7 @@
 #!/bin/sh
 
 binprefix() {
-	local archx bin
+	local archx bin host=$(uname -m)
 	case $1 in
 	arm)	archx=arm-linux-androideabi
 		bin=arm-linux-androideabi
@@ -24,7 +24,8 @@ binprefix() {
 		;;
 	esac
 
-	echo $ANDROID_NDK/toolchains/$archx-4.9/prebuilt/linux-$(uname -m)/bin/$bin
+	[ "$host" = i686 ] && host=x86
+	echo $ANDROID_NDK/toolchains/$archx-4.9/prebuilt/linux-$host/bin/$bin
 }
 
 agcc() {
