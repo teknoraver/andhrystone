@@ -8,8 +8,8 @@ android {
 		applicationId "net.teknoraver.andhrystone"
 		minSdkVersion 10
 		targetSdkVersion 10
-		versionCode 8
-		versionName "1.6"
+		versionCode 9
+		versionName "1.6.1"
 	}
 	buildTypes {
 		release {
