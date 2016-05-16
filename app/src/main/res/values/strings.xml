@@ -17,4 +17,5 @@
 	<string name="about">about…</string>
 	<string name="sharesub">%s Andhrystone result</string>
 	<string name="sharetxt">Brand: %1$s\nManufacturer: %2$s\nModel: %3$s\nABI: %4$s\nSingle thread dhrystones: %5$s\nMulti thread dhrystones: %6$s</string>
+	<string name="start">Start!</string>
 </resources>

@@ -26,6 +26,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -37,26 +40,29 @@ import java.io.InputStreamReader;
 import java.text.NumberFormat;
 
 public class MainActivity extends Activity {
-	private final String arch = detectCpu();
+	private String arch32;
+	private String arch64;
 	private TextView dhrystones_st;
 	private TextView dhrystones_mt;
+	private TableRow singlerow;
+	private TableRow multirow;
+	private Button startButton;
 
 	@SuppressWarnings("deprecation")
-	private String detectCpu() {
-		if(Build.CPU_ABI.startsWith("arm64"))
-			return "arm64";
-		if(Build.CPU_ABI.startsWith("arm"))
-			return "arm";
-		if(Build.CPU_ABI.startsWith("x86_64"))
-			return "x86_64";
-		if(Build.CPU_ABI.startsWith("x86"))
-			return "x86";
-		if(Build.CPU_ABI.startsWith("mips64"))
-			return "mips64";
-		if(Build.CPU_ABI.startsWith("mips"))
-			return "mips";
-
-		return null;
+	private void detectCpu() {
+		if(Build.CPU_ABI.startsWith("arm")) {
+			arch32 = "arm";
+			if(Build.CPU_ABI.startsWith("arm64"))
+				arch64 = "arm64";
+		} else if(Build.CPU_ABI.startsWith("x86")) {
+			arch32 = "x86";
+			if(Build.CPU_ABI.startsWith("x86_64"))
+				arch64 = "x86_64";
+		} else if(Build.CPU_ABI.startsWith("mips")) {
+			arch32 = "mips";
+			if(Build.CPU_ABI.startsWith("mips64"))
+				arch64 = "mips64";
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -72,14 +78,21 @@ public class MainActivity extends Activity {
 		final TextView architecture = (TextView)findViewById(R.id.arch);
 		dhrystones_st = (TextView)findViewById(R.id.dhrystones_st);
 		dhrystones_mt = (TextView)findViewById(R.id.dhrystones_mt);
+		singlerow = (TableRow)findViewById(R.id.singlerow);
+		multirow = (TableRow)findViewById(R.id.multirow);
+		startButton = (Button)findViewById(R.id.startDry);
 
 		manufacturer.setText(Build.MANUFACTURER);
 		brand.setText(Build.BRAND);
 		model.setText(Build.MODEL);
 		abi.setText(Build.CPU_ABI);
 
-		if(arch != null)
-			architecture.setText(arch);
+		detectCpu();
+
+		if(arch64 != null)
+			architecture.setText(arch64);
+		else if(arch32 != null)
+			architecture.setText(arch32);
 		else {
 			dhrystones_st.setText(R.string.unknown);
 			dhrystones_mt.setText(R.string.unknown);
@@ -89,10 +102,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(arch != null) {
+		if(arch32 != null) {
 			dhrystones_st.setText("");
 			dhrystones_mt.setText("");
-			new Dhrystone().execute(false);
 		}
 	}
 
@@ -131,19 +143,30 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private class Dhrystone extends AsyncTask<Boolean, Integer, Void>
+	public void dryStart(View v)
 	{
+		singlerow.setVisibility(View.VISIBLE);
+		multirow.setVisibility(View.VISIBLE);
+		startButton.setVisibility(View.GONE);
+		new Dhrystone().execute(0);
+	}
+
+	private class Dhrystone extends AsyncTask<Integer, Integer, Void>
+	{
+		private static final int MT = 1;
+		private static final int B64 = 2;
 		private static final int tries = 5;
+
 		private int max = 0;
-		private boolean mt;
+		private int mode;
 		private TextView text;
 		private boolean err;
 
 		@Override
-		protected Void doInBackground(Boolean... params) {
-			mt = params[0];
-			text = (TextView)findViewById(mt ? R.id.dhrystones_mt : R.id.dhrystones_st);
-			final String binary = "dry-" + arch;
+		protected Void doInBackground(Integer... params) {
+			mode = params[0];
+			text = (TextView)findViewById((mode & MT )!= 0 ? R.id.dhrystones_mt : R.id.dhrystones_st);
+			final String binary = "dry-" + (((mode & B64) != 0) ? arch64 : arch32);
 			final File file = new File(getFilesDir(), binary);
 			try {
 				getFilesDir().mkdirs();
@@ -160,7 +183,7 @@ public class MainActivity extends Activity {
 				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
 				for(int i = 1; i <= tries; i++) {
 					publishProgress(i);
-					final BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath() + (mt ? " -bt" : " -b")).getInputStream()));
+					final BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath() + ((mode & MT) != 0 ? " -bt" : " -b")).getInputStream()));
 					int threads = Integer.parseInt(stdout.readLine());
 					int sum = 0;
 					while(threads-- > 0)
@@ -185,8 +208,8 @@ public class MainActivity extends Activity {
 				text.setText(R.string.unknown);
 			else
 				text.setText(NumberFormat.getIntegerInstance().format(max));
-			if(!mt)
-				new Dhrystone().execute(true);
+			if(mode != (MT & B64))
+				new Dhrystone().execute(mode + 1);
 		}
 	}
 }

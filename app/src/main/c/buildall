@@ -1,5 +1,7 @@
 #!/bin/sh
 
+ndk=$(awk -F= '/^ndk.dir=/{print$2}' ../local.properties)
+
 binprefix() {
 	local archx bin host=$(uname -m)
 	case $1 in
@@ -25,7 +27,7 @@ binprefix() {
 	esac
 
 	[ "$host" = i686 ] && host=x86
-	echo $ANDROID_NDK/toolchains/$archx-4.9/prebuilt/linux-$host/bin/$bin
+	echo $ndk/toolchains/$archx-4.9/prebuilt/linux-$host/bin/$bin
 }
 
 agcc() {
@@ -33,18 +35,18 @@ agcc() {
 
 	case $AGCCARCH in
 	arm)	flags='-mfloat-abi=softfp -march=armv7-a -mtune=cortex-a9' ;;
-	arm64)	flags='-march=armv8-a -mtune=cortex-a57' ;;
+	arm64)	flags='-march=armv8-a -mtune=cortex-a57 -mcpu=cortex-a57' ;;
 	x86)	flags='-march=atom' ;;
 	x86_64)	flags='-march=atom' ;;
 	mips)	flags='-march=mips32r2' ;;
 	mips64)	flags='-march=mips64r2' ;;
 	esac
 
-	$(binprefix $AGCCARCH)-gcc -fPIE -pie -O3 $flags --sysroot=$ANDROID_NDK/platforms/android-21/arch-$AGCCARCH "$@"
+	$(binprefix $AGCCARCH)-gcc -fPIE -pie -O3 $flags --sysroot=$ndk/platforms/android-21/arch-$AGCCARCH "$@"
 }
 
 mkdir -p src/main/assets
-for i in arm arm64 x86 x86_64 mips mips64; do
+for i in arm arm64 x86 x86_64 mips; do
 	AGCCARCH=$i
 	agcc -c src/main/c/dry.c -o /tmp/dry$$.o -Wall
 	agcc src/main/c/dry.c /tmp/dry$$.o -o src/main/assets/dry-$i -Wall -DPASS2

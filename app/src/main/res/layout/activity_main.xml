@@ -123,7 +123,24 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="match_parent"
+		android:id="@+id/startrow">
+
+		<Button
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/start"
+			android:id="@+id/startDry"
+			android:onClick="dryStart"
+			android:layout_column="0"
+			android:layout_span="2"/>
+	</TableRow>
+
+	<TableRow
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:id="@+id/singlerow">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -140,7 +157,9 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:id="@+id/multirow">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
