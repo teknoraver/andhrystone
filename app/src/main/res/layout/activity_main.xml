@@ -110,19 +110,6 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-
-		<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="@string/dhrystones"
-			android:layout_column="0"
-			android:layout_span="2"/>
-	</TableRow>
-
-	<TableRow
-		android:layout_width="fill_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/startrow">
 
@@ -138,8 +125,20 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/dhrystones32"
+			android:layout_column="0"
+			android:layout_span="2"/>
+	</TableRow>
+
+	<TableRow
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:visibility="gone"
 		android:id="@+id/singlerow">
 		<TextView
 			android:layout_width="wrap_content"
@@ -151,14 +150,13 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:id="@+id/dhrystones_st"
+			android:id="@+id/dhrystones_st32"
 			android:layout_column="1"/>
 	</TableRow>
 
 	<TableRow
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:visibility="gone"
 		android:id="@+id/multirow">
 		<TextView
 			android:layout_width="wrap_content"
@@ -170,7 +168,56 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:id="@+id/dhrystones_mt"
+			android:id="@+id/dhrystones_mt32"
+			android:layout_column="1"/>
+	</TableRow>
+
+	<TableRow
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/dhrystones64"
+			android:layout_column="0"
+			android:layout_span="2"/>
+	</TableRow>
+
+	<TableRow
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/singlerow64">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="@string/dhry_st"
+			android:layout_column="0"/>
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:id="@+id/dhrystones_st64"
+			android:layout_column="1"/>
+	</TableRow>
+
+	<TableRow
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/multirow64">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="@string/dhry_mt"
+			android:layout_column="0"/>
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:id="@+id/dhrystones_mt64"
 			android:layout_column="1"/>
 	</TableRow>
 

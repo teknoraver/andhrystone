@@ -42,8 +42,10 @@ import java.text.NumberFormat;
 public class MainActivity extends Activity {
 	private String arch32;
 	private String arch64;
-	private TextView dhrystones_st;
-	private TextView dhrystones_mt;
+	private TextView dhrystones_st32;
+	private TextView dhrystones_mt32;
+	private TextView dhrystones_st64;
+	private TextView dhrystones_mt64;
 	private TableRow singlerow;
 	private TableRow multirow;
 	private Button startButton;
@@ -76,8 +78,10 @@ public class MainActivity extends Activity {
 		final TextView model = (TextView)findViewById(R.id.model);
 		final TextView abi = (TextView)findViewById(R.id.abi);
 		final TextView architecture = (TextView)findViewById(R.id.arch);
-		dhrystones_st = (TextView)findViewById(R.id.dhrystones_st);
-		dhrystones_mt = (TextView)findViewById(R.id.dhrystones_mt);
+		dhrystones_st32 = (TextView)findViewById(R.id.dhrystones_st32);
+		dhrystones_mt32 = (TextView)findViewById(R.id.dhrystones_mt32);
+		dhrystones_st64 = (TextView)findViewById(R.id.dhrystones_st64);
+		dhrystones_mt64 = (TextView)findViewById(R.id.dhrystones_mt64);
 		singlerow = (TableRow)findViewById(R.id.singlerow);
 		multirow = (TableRow)findViewById(R.id.multirow);
 		startButton = (Button)findViewById(R.id.startDry);
@@ -94,8 +98,8 @@ public class MainActivity extends Activity {
 		else if(arch32 != null)
 			architecture.setText(arch32);
 		else {
-			dhrystones_st.setText(R.string.unknown);
-			dhrystones_mt.setText(R.string.unknown);
+			dhrystones_st32.setText(R.string.unknown);
+			dhrystones_mt32.setText(R.string.unknown);
 		}
 	}
 
@@ -103,8 +107,8 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		if(arch32 != null) {
-			dhrystones_st.setText("");
-			dhrystones_mt.setText("");
+			dhrystones_st32.setText("");
+			dhrystones_mt32.setText("");
 		}
 	}
 
@@ -124,8 +128,8 @@ public class MainActivity extends Activity {
 				Build.MANUFACTURER,
 				Build.MODEL,
 				Build.CPU_ABI,
-				dhrystones_st.getText(),
-				dhrystones_mt.getText()
+				dhrystones_st32.getText(),
+				dhrystones_mt32.getText()
 			);
 			startActivity(new Intent(Intent.ACTION_SEND)
 				.setType("text/plain")
@@ -145,9 +149,6 @@ public class MainActivity extends Activity {
 
 	public void dryStart(View v)
 	{
-		singlerow.setVisibility(View.VISIBLE);
-		multirow.setVisibility(View.VISIBLE);
-		startButton.setVisibility(View.GONE);
 		new Dhrystone().execute(0);
 	}
 
@@ -165,7 +166,19 @@ public class MainActivity extends Activity {
 		@Override
 		protected Void doInBackground(Integer... params) {
 			mode = params[0];
-			text = (TextView)findViewById((mode & MT )!= 0 ? R.id.dhrystones_mt : R.id.dhrystones_st);
+			int textid;
+			if((mode & MT) != 0) {
+				if((mode & B64) != 0)
+					textid = R.id.dhrystones_mt64;
+				else
+					textid = R.id.dhrystones_mt32;
+			} else {
+				if((mode & B64) != 0)
+					textid = R.id.dhrystones_st64;
+				else
+					textid = R.id.dhrystones_st32;
+			}
+			text = (TextView)findViewById(textid);
 			final String binary = "dry-" + (((mode & B64) != 0) ? arch64 : arch32);
 			final File file = new File(getFilesDir(), binary);
 			try {
@@ -208,7 +221,7 @@ public class MainActivity extends Activity {
 				text.setText(R.string.unknown);
 			else
 				text.setText(NumberFormat.getIntegerInstance().format(max));
-			if(mode != (MT & B64))
+			if(mode != (MT | B64))
 				new Dhrystone().execute(mode + 1);
 		}
 	}

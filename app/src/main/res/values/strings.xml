@@ -11,7 +11,8 @@
 	<string name="running">Running…</string>
 	<string name="unknown">Unknown</string>
 	<string name="runningxof">Running %1$d/%2$d</string>
-	<string name="dhrystones">Dhrystones</string>
+	<string name="dhrystones32">Dhrystones (32 bit)</string>
+	<string name="dhrystones64">Dhrystones (64 bit)</string>
 	<string name="dinfo">Device Info</string>
 	<string name="share">share</string>
 	<string name="about">about…</string>
