@@ -166,19 +166,19 @@ public class MainActivity extends Activity {
 		@Override
 		protected Void doInBackground(Integer... params) {
 			mode = params[0];
-			int textid;
-			if((mode & MT) != 0) {
-				if((mode & B64) != 0)
-					textid = R.id.dhrystones_mt64;
+			if((mode & B64) == 0) {
+				if((mode & MT) == 0)
+					text = dhrystones_st32;
 				else
-					textid = R.id.dhrystones_mt32;
+					text = dhrystones_mt32;
 			} else {
-				if((mode & B64) != 0)
-					textid = R.id.dhrystones_st64;
+				if((mode & MT) == 0)
+					text = dhrystones_st64;
 				else
-					textid = R.id.dhrystones_st32;
+					text = dhrystones_mt64;
 			}
-			text = (TextView)findViewById(textid);
+			if(arch64 == null && (mode & B64) != 0)
+				return null;
 			final String binary = "dry-" + (((mode & B64) != 0) ? arch64 : arch32);
 			final File file = new File(getFilesDir(), binary);
 			try {
@@ -217,7 +217,9 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(Void o) {
-			if(err)
+			if(arch64 == null && (mode & B64) != 0)
+				text.setText("Unsupported");
+			else if(err)
 				text.setText(R.string.unknown);
 			else
 				text.setText(NumberFormat.getIntegerInstance().format(max));
