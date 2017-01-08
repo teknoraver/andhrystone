@@ -110,8 +110,7 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="match_parent"
-		android:id="@+id/startrow">
+		android:layout_height="match_parent">
 
 		<Button
 			android:layout_width="fill_parent"
@@ -138,8 +137,7 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/singlerow">
+		android:layout_height="wrap_content">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -156,8 +154,7 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/multirow">
+		android:layout_height="wrap_content">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -187,8 +184,7 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/singlerow64">
+		android:layout_height="wrap_content">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -205,8 +201,7 @@
 
 	<TableRow
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:id="@+id/multirow64">
+		android:layout_height="wrap_content">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

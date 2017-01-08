@@ -35,18 +35,17 @@ agcc() {
 
 	case $AGCCARCH in
 	arm)	flags='-mfloat-abi=softfp -march=armv7-a -mtune=cortex-a9' ;;
-	arm64)	flags='-march=armv8-a -mtune=cortex-a57 -mcpu=cortex-a57' ;;
-	x86)	flags='-march=atom' ;;
-	x86_64)	flags='-march=atom' ;;
+	arm64)	flags='-march=armv8-a -mtune=cortex-a57.cortex-a53 -mcpu=cortex-a57.cortex-a53' ;;
+	x86*)	flags='-march=atom' ;;
 	mips)	flags='-march=mips32r2' ;;
-	mips64)	flags='-march=mips64r2' ;;
+	mips64)	flags='-march=mips64r6' ;;
 	esac
 
-	$(binprefix $AGCCARCH)-gcc -fPIE -pie -O3 $flags --sysroot=$ndk/platforms/android-21/arch-$AGCCARCH "$@"
+	$(binprefix $AGCCARCH)-gcc -fPIE -pie -Ofast $flags --sysroot=$ndk/platforms/android-24/arch-$AGCCARCH "$@"
 }
 
 mkdir -p src/main/assets
-for i in arm arm64 x86 x86_64 mips; do
+for i in arm arm64 x86 x86_64 mips mips64; do
 	AGCCARCH=$i
 	agcc -c src/main/c/dry.c -o /tmp/dry$$.o -Wall
 	agcc src/main/c/dry.c /tmp/dry$$.o -o src/main/assets/dry-$i -Wall -DPASS2

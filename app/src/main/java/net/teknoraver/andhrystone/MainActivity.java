@@ -46,8 +46,6 @@ public class MainActivity extends Activity {
 	private TextView dhrystones_mt32;
 	private TextView dhrystones_st64;
 	private TextView dhrystones_mt64;
-	private TableRow singlerow;
-	private TableRow multirow;
 	private Button startButton;
 
 	@SuppressWarnings("deprecation")
@@ -82,8 +80,6 @@ public class MainActivity extends Activity {
 		dhrystones_mt32 = (TextView)findViewById(R.id.dhrystones_mt32);
 		dhrystones_st64 = (TextView)findViewById(R.id.dhrystones_st64);
 		dhrystones_mt64 = (TextView)findViewById(R.id.dhrystones_mt64);
-		singlerow = (TableRow)findViewById(R.id.singlerow);
-		multirow = (TableRow)findViewById(R.id.multirow);
 		startButton = (Button)findViewById(R.id.startDry);
 
 		manufacturer.setText(Build.MANUFACTURER);
@@ -149,6 +145,7 @@ public class MainActivity extends Activity {
 
 	public void dryStart(View v)
 	{
+		startButton.setEnabled(false);
 		new Dhrystone().execute(0);
 	}
 
@@ -218,13 +215,15 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void o) {
 			if(arch64 == null && (mode & B64) != 0)
-				text.setText("Unsupported");
+				text.setText(R.string.unsupported);
 			else if(err)
 				text.setText(R.string.unknown);
 			else
 				text.setText(NumberFormat.getIntegerInstance().format(max));
 			if(mode != (MT | B64))
 				new Dhrystone().execute(mode + 1);
+			else
+				startButton.setEnabled(true);
 		}
 	}
 }
