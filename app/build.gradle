@@ -1,19 +1,41 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+def hasKeystore = keystorePropertiesFile.exists()
+if (hasKeystore) {
+	keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
-	compileSdkVersion 25
-	buildToolsVersion "25.0.2"
+	namespace 'net.teknoraver.andhrystone'
+	compileSdk 37
+	buildToolsVersion "37.0.0"
 
 	defaultConfig {
 		applicationId "net.teknoraver.andhrystone"
-		minSdkVersion 10
-		targetSdkVersion 10
+		minSdkVersion 21
+		targetSdkVersion 37
 		versionCode 9
 		versionName "1.7"
+	}
+	signingConfigs {
+		if (hasKeystore) {
+			release {
+				storeFile file(keystoreProperties['storeFile'])
+				storePassword keystoreProperties['storePassword']
+				keyAlias keystoreProperties['keyAlias']
+				keyPassword keystoreProperties['keyPassword']
+			}
+		}
 	}
 	buildTypes {
 		release {
 			minifyEnabled true
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+			if (hasKeystore) {
+				signingConfig signingConfigs.release
+			}
 		}
 	}
 }
@@ -23,7 +45,7 @@ task buildBin(type: Exec) {
 }
 
 dependencies {
-	compile fileTree(dir: 'libs', include: ['*.jar'])
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 preBuild.dependsOn(buildBin)

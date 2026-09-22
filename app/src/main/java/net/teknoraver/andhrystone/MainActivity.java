@@ -117,8 +117,8 @@ public class MainActivity extends Activity {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.share:
+		int id = item.getItemId();
+		if (id == R.id.share) {
 			String sharetxt = getString(R.string.sharetxt,
 				Build.BRAND,
 				Build.MANUFACTURER,
@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
 				.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.sharesub, Build.MODEL))
 				.putExtra(Intent.EXTRA_TEXT, sharetxt));
 			return true;
-		case R.id.about:
+		} else if (id == R.id.about) {
 			new AlertDialog.Builder(this)
 				.setTitle(R.string.app_name)
 				.setMessage(R.string.desc)
