@@ -16,8 +16,8 @@ android {
 		applicationId "net.teknoraver.andhrystone"
 		minSdkVersion 21
 		targetSdkVersion 37
-		versionCode 9
-		versionName "1.7"
+		versionCode 11
+		versionName "1.7.2"
 	}
 	signingConfigs {
 		if (hasKeystore) {
