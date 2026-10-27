@@ -10,3 +10,4 @@
 -e *.iml
 /.idea/
 *.hprof
+/app/src/main/jniLibs/

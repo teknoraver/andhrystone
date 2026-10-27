@@ -13,6 +13,15 @@ triple() {
 	esac
 }
 
+abidir() {
+	case $1 in
+	arm)	echo armeabi-v7a ;;
+	arm64)	echo arm64-v8a ;;
+	x86)	echo x86 ;;
+	x86_64)	echo x86_64 ;;
+	esac
+}
+
 agcc() {
 	local flags
 
@@ -25,11 +34,28 @@ agcc() {
 	$toolchain/$(triple $AGCCARCH)$api-clang -fPIE -pie -Ofast -fcommon $flags "$@"
 }
 
-mkdir -p src/main/assets
+# The binaries are shipped as JNI libs (lib*.so), not assets: binaries
+# extracted by the app into its own data dir at runtime can't be executed
+# there on Android 10+ (SELinux W^X blocks app_data_file execution), while
+# the native lib dir the OS extracts lib*.so into at install time is
+# execute-permitted. Since the benchmark intentionally runs both the 32-bit
+# and 64-bit binary on a 64-bit device for comparison, every ABI's jniLibs
+# folder gets a copy of all four binaries, so whichever single ABI the
+# installer picks as primary still has all of them available.
+build=/tmp/andhrystone-build-$$
+mkdir -p "$build"
 for i in arm arm64 x86 x86_64; do
 	AGCCARCH=$i
-	agcc -c src/main/c/dry.c -o /tmp/dry$$.o -Wall
-	agcc src/main/c/dry.c /tmp/dry$$.o -o src/main/assets/dry-$i -Wall -DPASS2
-	rm -f /tmp/dry$$.o
-	$toolchain/llvm-strip -s -R.comment src/main/assets/dry-$i
+	agcc -c src/main/c/dry.c -o "$build/dry$$.o" -Wall
+	agcc src/main/c/dry.c "$build/dry$$.o" -o "$build/libdry-$i.so" -Wall -DPASS2
+	rm -f "$build/dry$$.o"
+	$toolchain/llvm-strip -s -R.comment "$build/libdry-$i.so"
 done
+
+rm -rf src/main/jniLibs
+for i in arm arm64 x86 x86_64; do
+	dir=src/main/jniLibs/$(abidir $i)
+	mkdir -p "$dir"
+	cp "$build"/libdry-*.so "$dir/"
+done
+rm -rf "$build"

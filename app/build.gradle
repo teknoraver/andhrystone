@@ -16,8 +16,8 @@ android {
 		applicationId "net.teknoraver.andhrystone"
 		minSdkVersion 21
 		targetSdkVersion 37
-		versionCode 11
-		versionName "1.7.2"
+		versionCode 13
+		versionName "1.7.4"
 	}
 	signingConfigs {
 		if (hasKeystore) {
@@ -36,6 +36,11 @@ android {
 			if (hasKeystore) {
 				signingConfig signingConfigs.release
 			}
+		}
+	}
+	packagingOptions {
+		jniLibs {
+			useLegacyPackaging = true
 		}
 	}
 }

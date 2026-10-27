@@ -33,9 +33,7 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.NumberFormat;
 
@@ -48,20 +46,28 @@ public class MainActivity extends Activity {
 	private TextView dhrystones_mt64;
 	private Button startButton;
 
-	@SuppressWarnings("deprecation")
 	private void detectCpu() {
-		if(Build.CPU_ABI.startsWith("arm")) {
-			arch32 = "arm";
-			if(Build.CPU_ABI.startsWith("arm64"))
+		// Build.SUPPORTED_{32,64}_BIT_ABIS reflects what the device can actually execute.
+		// Build.CPU_ABI doesn't: some recent 64-bit-only devices (e.g. Pixel 9) report an
+		// arm64 CPU_ABI but have dropped 32-bit execution entirely at the kernel level, so
+		// inferring 32-bit support from the CPU_ABI prefix is wrong on those devices.
+		for(final String abi : Build.SUPPORTED_64_BIT_ABIS) {
+			if(abi.startsWith("arm64")) {
 				arch64 = "arm64";
-		} else if(Build.CPU_ABI.startsWith("x86")) {
-			arch32 = "x86";
-			if(Build.CPU_ABI.startsWith("x86_64"))
+				break;
+			} else if(abi.startsWith("x86_64")) {
 				arch64 = "x86_64";
-		} else if(Build.CPU_ABI.startsWith("mips")) {
-			arch32 = "mips";
-			if(Build.CPU_ABI.startsWith("mips64"))
-				arch64 = "mips64";
+				break;
+			}
+		}
+		for(final String abi : Build.SUPPORTED_32_BIT_ABIS) {
+			if(abi.startsWith("armeabi")) {
+				arch32 = "arm";
+				break;
+			} else if(abi.startsWith("x86")) {
+				arch32 = "x86";
+				break;
+			}
 		}
 	}
 
@@ -176,21 +182,15 @@ public class MainActivity extends Activity {
 			}
 			if(arch64 == null && (mode & B64) != 0)
 				return null;
-			final String binary = "dry-" + (((mode & B64) != 0) ? arch64 : arch32);
-			final File file = new File(getFilesDir(), binary);
+			if(arch32 == null && (mode & B64) == 0)
+				return null;
+			// Shipped as a JNI lib (not extracted from assets at runtime): on Android 10+,
+			// SELinux W^X blocks executing binaries extracted into the app's own data dir,
+			// but the native lib dir the OS extracts lib*.so into at install time is
+			// execute-permitted.
+			final String binary = "libdry-" + (((mode & B64) != 0) ? arch64 : arch32) + ".so";
+			final File file = new File(getApplicationInfo().nativeLibraryDir, binary);
 			try {
-				getFilesDir().mkdirs();
-
-				{
-					final InputStream in = getAssets().open(binary);
-					final FileOutputStream out = new FileOutputStream(file);
-					final byte buf[] = new byte[65536];
-					for (int len; (len = in.read(buf)) > 0; )
-						out.write(buf, 0, len);
-					in.close();
-					out.close();
-				}
-				Runtime.getRuntime().exec(new String[]{"chmod", "755", file.getAbsolutePath()}).waitFor();
 				for(int i = 1; i <= tries; i++) {
 					publishProgress(i);
 					final BufferedReader stdout = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(file.getAbsolutePath() + ((mode & MT) != 0 ? " -bt" : " -b")).getInputStream()));
@@ -200,7 +200,11 @@ public class MainActivity extends Activity {
 						sum += Integer.parseInt(stdout.readLine());
 					max = Math.max(sum, max);
 				}
-			} catch (final IOException | InterruptedException ex) {
+			} catch (final IOException | RuntimeException ex) {
+				// RuntimeException covers e.g. NumberFormatException from a process that
+				// exits without producing output (the exec() call itself can succeed even
+				// when the kernel then refuses to run the binary, such as a 32-bit ELF on
+				// a 64-bit-only device).
 				ex.printStackTrace();
 				err = true;
 			}
@@ -215,6 +219,8 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void o) {
 			if(arch64 == null && (mode & B64) != 0)
+				text.setText(R.string.unsupported);
+			else if(arch32 == null && (mode & B64) == 0)
 				text.setText(R.string.unsupported);
 			else if(err)
 				text.setText(R.string.unknown);
